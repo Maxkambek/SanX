@@ -1,0 +1,26 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('full-name/', views.DriverFullNameCreateAPIView.as_view()),
+    path('full-name-update-retrieve/', views.DriverFullNameRetrieveUpdateAPIView.as_view()),
+    path('date-birth/', views.DriverDateBirthCreateAPIView.as_view()),
+    path('date-birth-retrieve-update/', views.DriverDateBirthRetrieveUpdateAPIView.as_view()),
+    path('direction/', views.DriverDirectionCreateAPIView.as_view()),
+    path('direction-retrieve-update/', views.DriverDirectionRetrieveUpdateAPIView.as_view()),
+    path('avatar/', views.DriverAvatarCreateAPIView.as_view()),
+    path('avatar-retrieve-update/', views.DriverAvatarRetrieveUpdateAPIView.as_view()),
+    path('passport/', views.DriverPassportCreateAPIView.as_view()),
+    path('license/', views.DriverLicenseCreateAPIView.as_view()),
+    path('company/', views.DriverCompanyCreateAPIView.as_view()),
+    path('payment-type/', views.DriverPaymentTypeCreateAPIView.as_view()),
+    path('transport-details/', views.DriverTransportDetailsCreateAPIView.as_view()),
+    path('technical-passport/', views.TechnicalPassportCreateAPIView.as_view()),
+    path('transport-image/', views.TransportImagesCreateAPIView.as_view()),
+    path('transport-image-retrieve-update/', views.TransportImagesRetrieveUpdateAPIView.as_view()),
+    path('transport-weight-type/', views.TransportWeightTypeListAPIView.as_view()),
+    path('transport-type/', views.TransportTypeListAPIView.as_view()),
+    path('manufacturers/', views.ManufacturerTypeListAPIView.as_view()),
+    path('model-transport/', views.ModelTransportTypeListAPIView.as_view()),
+    path('colors/', views.ColorTransportListAPIView.as_view()),
+]
