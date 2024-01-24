@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'api.common.accounts',
     'api.common.main',
     'api.driver.driver_auth',
+    "api.client.client_auth",
+    "api.client.client_main"
 ]
 
 MIDDLEWARE = [
