@@ -2,7 +2,6 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
 from api.client.client_auth.models import ClientAvatar, ClientDateBirth, ClientFullName
 from . import serializers
 
@@ -95,13 +94,13 @@ class ClientAvatarRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     authentication_classes = [JWTAuthentication]
 
     def retrieve(self, request, *args, **kwargs):
-        instance = ClientFullName.objects.get(user=self.request.user)
+        instance = ClientAvatar.objects.get(user=self.request.user)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
-        instance = ClientFullName.objects.get(user=self.request.user)
+        instance = ClientAvatar.objects.get(user=self.request.user)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
@@ -142,3 +141,34 @@ class ClientDateBirthCreateAPIView(generics.CreateAPIView):
             return {'Location': str(data[api_settings.URL_FIELD_NAME])}
         except (TypeError, KeyError):
             return {}
+
+
+class ClientDateBirthRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = ClientDateBirth.objects.all()
+    serializer_class = serializers.ClientDateBirthSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = ClientDateBirth.objects.get(user=self.request.user)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = ClientDateBirth.objects.get(user=self.request.user)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)

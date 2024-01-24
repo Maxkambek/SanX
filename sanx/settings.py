@@ -28,14 +28,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # installed
     'corsheaders',
     'drf_yasg',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
-
-    # local
     'api.common.accounts',
     'api.common.main',
     'api.driver.driver_auth',

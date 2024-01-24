@@ -1,6 +1,12 @@
 from rest_framework import serializers
 from api.common.accounts.models import Account, VerifyCode
-from api.common.main.models import Country, Location
+from api.common.main.models import Country, Location, FAQ
+
+
+class FAQSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FAQ
+        fields = ['id', 'question', 'answer']
 
 
 class CountrySerializer(serializers.ModelSerializer):

@@ -8,5 +8,6 @@ urlpatterns = [
     path('verify-register/', views.CheckVerifyCodeAPIView.as_view(), name='verify-register'),
     path('login/', views.LoginAPIView.as_view(), name='login'),
     path('verify-login/', views.LoginVerifyAPIView.as_view(), name='verify-login'),
-    path('logout/', views.LogoutAPIView.as_view(), name='logout')
+    path('logout/', views.LogoutAPIView.as_view(), name='logout'),
+    path('faq/', views.FAQListAPIView.as_view())
 ]

@@ -14,3 +14,11 @@ class Location(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class FAQ(models.Model):
+    question = models.CharField(max_length=233)
+    answer = models.CharField(max_length=444)
+
+    def __str__(self):
+        return self.question
