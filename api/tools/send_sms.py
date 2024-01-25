@@ -4,7 +4,7 @@ import requests
 def send_sms(phone, code):
     url = "http://notify.eskiz.uz/api/message/sms/send"
     headers = {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDQ4MDk0ODAsImlhdCI6MTcwMjIxNzQ4MCwicm9sZSI6InVzZXIiLCJzdWIiOiIxMDUzIn0.68hdV55gTrUTvnV4VoUTIhzUxWuHIejPOvefUW7abzU"}
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDg3NTg4NTYsImlhdCI6MTcwNjE2Njg1Niwicm9sZSI6InVzZXIiLCJzaWduIjoiNTQzOWFkYzQyMzVjYjNjZDIwMzNlZmIwOTFiYzg2NzI4NDIyNzA5NDcxNGM0NmRmOTc3MTNiOTM4ZjVkYmNjYiIsInN1YiI6IjEwNTMifQ.ksbZiw05Q9W8DMKPyW1hTimmkLDmVP22JSXQaMuYW7c"}
     data = {
         'mobile_phone': phone,
         'message': code,

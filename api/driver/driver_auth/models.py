@@ -47,7 +47,6 @@ class ColorTransport(models.Model):
 
 #
 
-
 class DriverFullName(models.Model):
     user = models.OneToOneField(Account, on_delete=models.CASCADE, related_name="driver_full_name")
     name = models.CharField(max_length=123)
