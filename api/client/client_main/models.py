@@ -24,18 +24,20 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(choices=STATUS, max_length=123, default='New')
-    latitude = models.DecimalField(max_digits=20, decimal_places=6)
-    longitude = models.DecimalField(max_digits=20, decimal_places=6)
 
     def __str__(self):
         return self.name
+
+
+class OrderFiles(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_files')
+    file = models.FileField(upload_to='orders/')
 
 
 class ReplyDriver(models.Model):
     owner = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='driver_click')
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_clicks')
     created_at = models.DateTimeField(auto_now_add=True)
-    response = models.BooleanField(default=False)
 
     def __str__(self):
         return self.order.name

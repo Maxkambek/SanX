@@ -116,3 +116,12 @@ class LogoutAPIView(APIView):
             return Response(status=status.HTTP_205_RESET_CONTENT)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+#
+# class DeleteAccountView(APIView):
+#     permission_classes = [permissions.IsAuthenticated]
+#     authentication_classes = [JWTAuthentication]
+#
+#     def delete(self, request, *args, **kwargs):
+#         user = self.request.user
+#         user.

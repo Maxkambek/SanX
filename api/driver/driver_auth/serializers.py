@@ -97,3 +97,12 @@ class ColorTransportSerializer(serializers.ModelSerializer):
     class Meta:
         model = ColorTransport
         fields = ['id', 'name', 'color']
+
+
+class DriverInformationSerializer(serializers.ModelSerializer):
+    driver_full_name = DriverFullNameSerializer(read_only=True, many=False)
+    driver_avatar = DriverAvatarSerializer(read_only=True, many=False)
+
+    class Meta:
+        model = Account
+        fields = ['driver_full_name', 'driver_avatar']

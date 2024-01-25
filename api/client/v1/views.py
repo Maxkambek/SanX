@@ -4,6 +4,7 @@ from rest_framework.settings import api_settings
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from api.client.client_auth.models import ClientAvatar, ClientDateBirth, ClientFullName
 from . import serializers
+from api.client.client_main.models import Order, ReplyDriver
 
 
 class ClientFullNameCreateAPIView(generics.CreateAPIView):
@@ -13,7 +14,7 @@ class ClientFullNameCreateAPIView(generics.CreateAPIView):
     authentication_classes = [JWTAuthentication]
 
     def create(self, request, *args, **kwargs):
-        if ClientFullName.objects.get(user=self.request.user):
+        if ClientFullName.objects.filter(user=self.request.user).first():
             return Response({'message': "Already exists"}, status=status.HTTP_409_CONFLICT)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -22,7 +23,7 @@ class ClientFullNameCreateAPIView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
-        serializer.save()
+        serializer.save(user=self.request.user)
 
     def get_success_headers(self, data):
         try:
@@ -69,7 +70,7 @@ class ClientAvatarCreateAPIView(generics.CreateAPIView):
     authentication_classes = [JWTAuthentication]
 
     def create(self, request, *args, **kwargs):
-        if ClientAvatar.objects.get(user=self.request.user):
+        if ClientAvatar.objects.filter(user=self.request.user).first():
             return Response({'message': "Already exists"}, status=status.HTTP_409_CONFLICT)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -78,7 +79,7 @@ class ClientAvatarCreateAPIView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
-        serializer.save()
+        serializer.save(user=self.request.user)
 
     def get_success_headers(self, data):
         try:
@@ -125,7 +126,7 @@ class ClientDateBirthCreateAPIView(generics.CreateAPIView):
     authentication_classes = [JWTAuthentication]
 
     def create(self, request, *args, **kwargs):
-        if ClientDateBirth.objects.get(user=self.request.user):
+        if ClientDateBirth.objects.filter(user=self.request.user).first():
             return Response({'message': "Already exists"}, status=status.HTTP_409_CONFLICT)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -134,7 +135,7 @@ class ClientDateBirthCreateAPIView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
-        serializer.save()
+        serializer.save(user=self.request.user)
 
     def get_success_headers(self, data):
         try:
@@ -172,3 +173,71 @@ class ClientDateBirthRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
+
+
+class OrderCreateAPIView(generics.CreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = serializers.OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+    def get_success_headers(self, data):
+        try:
+            return {'Location': str(data[api_settings.URL_FIELD_NAME])}
+        except (TypeError, KeyError):
+            return {}
+
+
+class OrderListAPIView(generics.ListAPIView):
+    queryset = Order.objects.all()
+    serializer_class = serializers.OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+
+class OrderDetailAPIView(generics.RetrieveUpdateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = serializers.OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+
+class ReplyDriverCreateAPIView(generics.CreateAPIView):
+    serializer_class = serializers.ReplyDriverSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    queryset = ReplyDriver.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        reply_driver = ReplyDriver.objects.filter(
+            owner=self.request.user,
+            order_id=self.request.data['order']
+        ).first()
+        if reply_driver:
+            return Response({'message': "Already clicked"}, status=400)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+    def get_success_headers(self, data):
+        try:
+            return {'Location': str(data[api_settings.URL_FIELD_NAME])}
+        except (TypeError, KeyError):
+            return {}
+
+

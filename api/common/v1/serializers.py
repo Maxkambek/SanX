@@ -12,7 +12,7 @@ class FAQSerializer(serializers.ModelSerializer):
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
-        fields = ['id', 'name', 'flag_img']
+        fields = ['id', 'name', 'flag_img', 'code']
 
 
 class LocationSerializer(serializers.ModelSerializer):
