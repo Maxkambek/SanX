@@ -5,6 +5,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from api.client.client_auth.models import ClientAvatar, ClientDateBirth, ClientFullName
 from . import serializers
 from api.client.client_main.models import Order, ReplyDriver
+from ...common.accounts.models import Account
 
 
 class ClientFullNameCreateAPIView(generics.CreateAPIView):
@@ -207,7 +208,7 @@ class OrderListAPIView(generics.ListAPIView):
 
 class OrderDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = Order.objects.all()
-    serializer_class = serializers.OrderSerializer
+    serializer_class = serializers.OrderDetailSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -241,3 +242,41 @@ class ReplyDriverCreateAPIView(generics.CreateAPIView):
             return {}
 
 
+class ReplyDriverListAPIViewForClient(generics.ListAPIView):
+    serializer_class = serializers.MyOrdersOtClicksSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get_queryset(self):
+        order = self.request.query_params.get('order_id')
+        queryset = ReplyDriver.objects.filter(order_id=order)
+        return queryset
+
+
+class ReplyDriverListAPIViewForDriver(generics.ListAPIView):
+    serializer_class = serializers.MyClicksSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get_queryset(self):
+        queryset = ReplyDriver.objects.filter(owner=self.request.user)
+        return queryset
+
+
+class GiveWorkAPIViewForClient(generics.GenericAPIView):
+    serializer_class = serializers.GiveWorkSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request, *args, **kwargs):
+        worker_id = self.request.data.get('worker_id')
+        order_id = self.request.data.get('order_id')
+        order = Order.objects.filter(id=order_id).first()
+        user = Account.objects.filter(id=worker_id).first()
+        if not user:
+            return Response({'message': 'Driver not found'}, status=status.HTTP_404_NOT_FOUND)
+        if order is None:
+            return Response({'message': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
+        order.worker_id = user
+        order.save()
+        return Response({'message': 'Order saved'}, status=status.HTTP_200_OK)

@@ -24,6 +24,7 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(choices=STATUS, max_length=123, default='New')
+    worker_id = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name

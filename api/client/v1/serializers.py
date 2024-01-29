@@ -47,15 +47,42 @@ class OrderSerializer(serializers.ModelSerializer):
         ]
 
 
-class ReplyDriverSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ReplyDriver
-        fields = ['id', 'order', 'created_at']
-
-
 class MyOrdersOtClicksSerializer(serializers.ModelSerializer):
     owner = DriverInformationSerializer(read_only=True)
 
     class Meta:
         model = ReplyDriver
         fields = ['id', 'order', 'created_at', 'owner']
+
+
+class OrderDetailSerializer(serializers.ModelSerializer):
+    order_files = OrderFilesSerializer(many=True)
+    order_clicks = MyOrdersOtClicksSerializer(many=True)
+
+    class Meta:
+        model = Order
+        fields = ['id', 'transport_type', 'name', 'location_from', 'location_to',
+                  'date', 'weight', 'price', 'type_payment', 'description',
+                  'created_at', 'updated_at', 'status', 'order_files', 'order_clicks']
+
+
+class ReplyDriverSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReplyDriver
+        fields = ['id', 'order', 'created_at']
+
+
+class MyClicksSerializer(serializers.ModelSerializer):
+    order = OrderSerializer(read_only=True)
+
+    class Meta:
+        model = ReplyDriver
+        fields = ['id', 'order', 'created_at']
+
+
+class GiveWorkSerializer(serializers.ModelSerializer):
+    order_id = serializers.IntegerField()
+
+    class Meta:
+        model = Order
+        fields = ['worker_id', 'order_id']
