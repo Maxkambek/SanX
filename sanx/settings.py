@@ -33,11 +33,17 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+
     'api.common.accounts',
     'api.common.main',
+
     'api.driver.driver_auth',
-    "api.client.client_auth",
-    "api.client.client_main"
+
+    'api.client.client_auth',
+    'api.client.client_main',
+
+    'api.logistic.logistic_auth',
+    'api.logistic.logistic_main'
 ]
 
 MIDDLEWARE = [

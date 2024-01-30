@@ -23,3 +23,15 @@ class FAQ(models.Model):
 
     def __str__(self):
         return self.question
+
+
+class News(models.Model):
+    file = models.FileField(upload_to='news/')
+    title = models.CharField(max_length=444)
+    content = models.TextField()
+    sub_content = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+

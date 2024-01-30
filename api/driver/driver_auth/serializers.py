@@ -106,3 +106,17 @@ class DriverInformationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = ['driver_full_name', 'driver_avatar']
+
+
+class DriverInfoFullSerializer(serializers.ModelSerializer):
+    driver_full_name = DriverFullNameSerializer(read_only=True, many=False)
+    driver_avatar = DriverAvatarSerializer(read_only=True, many=False)
+    driver_direction = DriverDirectionSerializer(read_only=True, many=False)
+    driver_company = DriverCompanySerializer(read_only=True, many=False)
+    driver_payment_type = DriverPaymentTypeSerializer(read_only=True, many=False)
+    driver_transport_images = TransportImagesSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Account
+        fields = ['driver_full_name', 'driver_avatar', 'driver_direction', 'driver_company', 'driver_payment_type',
+                  'driver_transport_images']

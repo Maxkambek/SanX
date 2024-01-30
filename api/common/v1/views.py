@@ -4,10 +4,10 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from api.common.accounts.models import Account, VerifyCode
-from api.common.main.models import Location, Country, FAQ
+from api.common.main.models import Location, Country, FAQ, News
 from api.tools.send_sms import send_sms
 from .serializers import CountrySerializer, FAQSerializer, RegisterSerializer, LoginSerializer, LocationSerializer, \
-    VerifyCodeSerializer, LoginVerifySerializer
+    VerifyCodeSerializer, LoginVerifySerializer, NewsSerializer
 from random import randint
 
 
@@ -117,6 +117,7 @@ class LogoutAPIView(APIView):
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+
 #
 # class DeleteAccountView(APIView):
 #     permission_classes = [permissions.IsAuthenticated]
@@ -125,3 +126,13 @@ class LogoutAPIView(APIView):
 #     def delete(self, request, *args, **kwargs):
 #         user = self.request.user
 #         user.
+
+
+class NewsListAPIView(generics.ListAPIView):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
+
+
+class NewsDetailAPIView(generics.RetrieveAPIView):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer

@@ -9,5 +9,7 @@ urlpatterns = [
     path('login/', views.LoginAPIView.as_view(), name='login'),
     path('verify-login/', views.LoginVerifyAPIView.as_view(), name='verify-login'),
     path('logout/', views.LogoutAPIView.as_view(), name='logout'),
-    path('faq/', views.FAQListAPIView.as_view())
+    path('faq/', views.FAQListAPIView.as_view()),
+    path('news/', views.NewsListAPIView.as_view()),
+    path('news/<int:pk>/', views.NewsDetailAPIView.as_view())
 ]
