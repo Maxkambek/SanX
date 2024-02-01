@@ -27,10 +27,10 @@ class AccountManager(BaseUserManager):
 
 class Account(AbstractBaseUser, PermissionsMixin):
     ROLE = (
-        ('Driver', 'Driver'),
-        ('Client', 'Client'),
-        ('Company', 'Company'),
-        ('Administrator', 'Administrator')
+        (1, 'Driver'),
+        (2, 'Client'),
+        (3, 'Company'),
+        (4, 'Administrator')
     )
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     phone = models.CharField(max_length=19, unique=True)

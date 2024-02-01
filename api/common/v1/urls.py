@@ -11,5 +11,6 @@ urlpatterns = [
     path('logout/', views.LogoutAPIView.as_view(), name='logout'),
     path('faq/', views.FAQListAPIView.as_view()),
     path('news/', views.NewsListAPIView.as_view()),
-    path('news/<int:pk>/', views.NewsDetailAPIView.as_view())
+    path('news/<int:pk>/', views.NewsDetailAPIView.as_view()),
+    path('banners/', views.BannersListAPIView.as_view())
 ]

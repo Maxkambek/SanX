@@ -1,6 +1,12 @@
 from rest_framework import serializers
 from api.common.accounts.models import Account, VerifyCode
-from api.common.main.models import Country, Location, FAQ, News
+from api.common.main.models import Country, Location, FAQ, News, Banners
+
+
+class BannersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Banners
+        fields = ['id', 'title', 'description', 'file']
 
 
 class FAQSerializer(serializers.ModelSerializer):

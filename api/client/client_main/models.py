@@ -18,6 +18,7 @@ class Order(models.Model):
     location_to = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="location_to_order")
     date = models.DateField()
     weight = models.PositiveIntegerField(default=0)
+    volume_m3 = models.PositiveIntegerField(default=0, null=True, blank=True)
     price = models.DecimalField(max_digits=15, decimal_places=2)
     type_payment = models.CharField(max_length=123)
     description = models.TextField()

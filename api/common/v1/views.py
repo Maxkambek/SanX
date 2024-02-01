@@ -4,11 +4,16 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from api.common.accounts.models import Account, VerifyCode
-from api.common.main.models import Location, Country, FAQ, News
+from api.common.main.models import Location, Country, FAQ, News, Banners
 from api.tools.send_sms import send_sms
 from .serializers import CountrySerializer, FAQSerializer, RegisterSerializer, LoginSerializer, LocationSerializer, \
-    VerifyCodeSerializer, LoginVerifySerializer, NewsSerializer
+    VerifyCodeSerializer, LoginVerifySerializer, NewsSerializer, BannersSerializer
 from random import randint
+
+
+class BannersListAPIView(generics.ListAPIView):
+    serializer_class = BannersSerializer
+    queryset = Banners.objects.all()
 
 
 class FAQListAPIView(generics.ListAPIView):
