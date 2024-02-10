@@ -123,7 +123,6 @@ class LogoutAPIView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-#
 # class DeleteAccountView(APIView):
 #     permission_classes = [permissions.IsAuthenticated]
 #     authentication_classes = [JWTAuthentication]

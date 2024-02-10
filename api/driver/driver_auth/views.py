@@ -1,5 +1,6 @@
 from rest_framework import generics, permissions, status
 from rest_framework.settings import api_settings
+from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import *
 from . import serializers
@@ -472,3 +473,27 @@ class ModelTransportTypeListAPIView(generics.ListAPIView):
 class ColorTransportListAPIView(generics.ListAPIView):
     serializer_class = serializers.ColorTransportSerializer
     queryset = ColorTransport.objects.all()
+
+
+class DriverCheckAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        passport = DriverPassport.objects.filter(user=self.request.user).first()
+        lice = DriverLicense.objects.filter(user=self.request.user).first()
+        company = DriverCompany.objects.filter(user=self.request.user).first()
+        payment = DriverPaymentType.objects.filter(user=self.request.user).first()
+        detail = DriverTransportDetails.objects.filter(user=self.request.user).first()
+        tec_pas = TechnicalPassport.objects.filter(user=self.request.user).first()
+        images = TransportImages.objects.filter(user=self.request.user).first()
+        data = {
+            'passport': True if passport else False,
+            'license': True if lice else False,
+            'company': True if company else False,
+            'payment': True if payment else False,
+            'transport_detail': True if detail else False,
+            'tech_passport': True if tec_pas else False,
+            'images': True if images else False
+        }
+        return Response(data, status=200)

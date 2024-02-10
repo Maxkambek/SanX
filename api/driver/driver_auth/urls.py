@@ -23,4 +23,5 @@ urlpatterns = [
     path('manufacturers/', views.ManufacturerTypeListAPIView.as_view()),
     path('model-transport/', views.ModelTransportTypeListAPIView.as_view()),
     path('colors/', views.ColorTransportListAPIView.as_view()),
+    path('check-online-register/', views.DriverCheckAPIView.as_view())
 ]
