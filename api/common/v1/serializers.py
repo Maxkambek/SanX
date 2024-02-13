@@ -1,6 +1,18 @@
 from rest_framework import serializers
 from api.common.accounts.models import Account, VerifyCode
-from api.common.main.models import Country, Location, FAQ, News, Banners
+from api.common.main.models import Country, Location, FAQ, News, Banners, ChatMessage, VersionProject
+
+
+class VersionProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VersionProject
+        fields = '__all__'
+
+
+class AccountInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ['get_user_info']
 
 
 class BannersSerializer(serializers.ModelSerializer):

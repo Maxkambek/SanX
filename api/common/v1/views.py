@@ -4,11 +4,67 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from api.common.accounts.models import Account, VerifyCode
-from api.common.main.models import Location, Country, FAQ, News, Banners
+from api.common.main.models import Location, Country, FAQ, News, Banners, ChatMessage, Chat, VersionProject
 from api.tools.send_sms import send_sms
 from .serializers import CountrySerializer, FAQSerializer, RegisterSerializer, LoginSerializer, LocationSerializer, \
-    VerifyCodeSerializer, LoginVerifySerializer, NewsSerializer, BannersSerializer
+    VerifyCodeSerializer, LoginVerifySerializer, NewsSerializer, BannersSerializer, VersionProjectSerializer
 from random import randint
+
+from ...tools.permissions import get_user_info
+
+
+class VersionProjectListAPIView(generics.ListAPIView):
+    serializer_class = VersionProjectSerializer
+    queryset = VersionProject.objects.all()
+
+
+class ChatCreateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request):
+        sender = self.request.user.id
+        receiver = request.data['receiver']
+        content = request.data['content']
+        chat = Chat.objects.filter(participant1_id=sender, participant2_id=receiver).first()
+        if chat is None:
+            chat = Chat.objects.create(participant1_id=sender, participant2_id=receiver)
+            chat.save()
+        chat = Chat.objects.filter(participant1_id=sender, participant2_id=receiver).first()
+        message = ChatMessage.objects.create(chat_id=chat.id, sender_id=sender, receiver_id=receiver, content=content)
+        message.save()
+        return Response({'message': 'success'}, status=status.HTTP_201_CREATED)
+
+
+class ChatListView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        data = []
+        chats = Chat.objects.filter(participant1_id=request.user)
+        for chat in chats:
+            user = Account.objects.get(id=chat.participant2_id)
+            data.append(dict(
+                chat_id=chat.id,
+                user_info=get_user_info(user),
+            ))
+        return Response(data)
+
+
+class ChatDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request, pk):
+        data = []
+        msg = ChatMessage.objects.filter(chat_id=pk)
+        for i in msg:
+            data.append(dict(
+                id=i.id,
+                content=i.content
+            ))
+        return Response(data)
 
 
 class BannersListAPIView(generics.ListAPIView):

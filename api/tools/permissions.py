@@ -23,3 +23,24 @@ class IsAdministratorUser(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return request.user.role == 'Administrator'
+
+
+def get_user_info(user):
+    if user.role == 'Client':
+        data = {
+            'name': user.client_full_name.name,
+            'avatar': user.client_avatar.image.url
+        }
+        return data
+    if user.role == 'Company':
+        data = {
+            'name': user.logistic_company.company_name,
+            'avatar': user.logistic_company.avatar.url
+        }
+        return data
+    if user.role == 'Driver':
+        data = {
+            'name': user.driver_full_name.name,
+            'avatar': user.driver_avatar.image.url
+        }
+        return data

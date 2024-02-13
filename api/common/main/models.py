@@ -1,4 +1,5 @@
 from django.db import models
+from api.common.accounts.models import Account
 
 
 class Country(models.Model):
@@ -44,3 +45,35 @@ class Banners(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Chat(models.Model):
+    participant1 = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, related_name='participant1')
+    participant2 = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, related_name='participant2')
+
+
+class ChatMessage(models.Model):
+    chat = models.ForeignKey(Chat, null=True, on_delete=models.CASCADE)
+    content = models.TextField()
+    receiver = models.ForeignKey(Account, null=True, on_delete=models.CASCADE, related_name='receiver')
+    sender = models.ForeignKey(Account, null=True, on_delete=models.CASCADE, related_name='sender')
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_seen = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['created_at']
+
+
+class VersionProject(models.Model):
+    STATUS = (
+        ('Optional', 'Optional'),
+        ('Forced', 'Forced'),
+        ('Shutdown', 'Shutdown')
+    )
+    version = models.PositiveIntegerField()
+    version_text = models.CharField(max_length=333)
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=123, choices=STATUS)
+
+    def __str__(self):
+        return self.version_text

@@ -27,10 +27,10 @@ class AccountManager(BaseUserManager):
 
 class Account(AbstractBaseUser, PermissionsMixin):
     ROLE = (
-        (1, 'Driver'),
-        (2, 'Client'),
-        (3, 'Company'),
-        (4, 'Administrator')
+        ("Driver", 'Driver'),
+        ("Client", 'Client'),
+        ("Company", 'Company'),
+        ("Administrator", 'Administrator')
     )
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     phone = models.CharField(max_length=19, unique=True)
@@ -53,6 +53,27 @@ class Account(AbstractBaseUser, PermissionsMixin):
             'access': str(refresh.access_token)
         }
         return data
+
+    @property
+    def get_user_info(self):
+        if self.role == 'Client':
+            data = {
+                'name': self.client_full_name.name,
+                'avatar': self.client_avatar.image
+            }
+            return data
+        if self.role == 'Company':
+            data = {
+                'name': self.logistic_company.company_name,
+                'avatar': self.logistic_company.avatar
+            }
+            return data
+        if self.role == 'Driver':
+            data = {
+                'name': self.driver_full_name.name,
+                'avatar': self.driver_avatar.image
+            }
+            return data
 
 
 class VerifyCode(models.Model):
