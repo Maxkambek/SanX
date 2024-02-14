@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, District, Location
+from .models import Category, District
 
 
 @admin.register(Category)
@@ -12,7 +12,3 @@ class CategoryAdmin(admin.ModelAdmin):
 class DistrictAdmin(admin.ModelAdmin):
     pass
 
-
-@admin.register(Location)
-class LocationAdmin(admin.ModelAdmin):
-    pass
