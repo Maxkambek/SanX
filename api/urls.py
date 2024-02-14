@@ -7,5 +7,5 @@ urlpatterns = [
     path('driver/', include('api.driver.driver_auth.urls')),
     path('client/', include('api.client.v1.urls')),
     path('versions/', VersionProjectListAPIView.as_view()),
-
+    path('logistic/', include('api.logistic.api.urls'))
 ]

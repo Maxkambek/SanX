@@ -1,6 +1,13 @@
 from rest_framework import serializers
 from api.common.accounts.models import Account, VerifyCode
-from api.common.main.models import Country, Location, FAQ, News, Banners, ChatMessage, VersionProject
+from api.common.main.models import Country, Location, FAQ, News, Banners, ChatMessage, VersionProject, District
+from api.common.main.models import Category
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
 
 
 class VersionProjectSerializer(serializers.ModelSerializer):
@@ -31,6 +38,12 @@ class CountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
         fields = ['id', 'name', 'flag_img', 'code']
+
+
+class DistrictSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = District
+        fields = ['id', 'name']
 
 
 class LocationSerializer(serializers.ModelSerializer):

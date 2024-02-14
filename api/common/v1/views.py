@@ -4,13 +4,27 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from api.common.accounts.models import Account, VerifyCode
-from api.common.main.models import Location, Country, FAQ, News, Banners, ChatMessage, Chat, VersionProject
+from api.common.main.models import Location, Country, FAQ, News, Banners, District, ChatMessage, Chat, VersionProject, \
+    Category
 from api.tools.send_sms import send_sms
 from .serializers import CountrySerializer, FAQSerializer, RegisterSerializer, LoginSerializer, LocationSerializer, \
-    VerifyCodeSerializer, LoginVerifySerializer, NewsSerializer, BannersSerializer, VersionProjectSerializer
+    VerifyCodeSerializer, LoginVerifySerializer, NewsSerializer, BannersSerializer, DistrictSerializer, \
+    VersionProjectSerializer, CategorySerializer
 from random import randint
-
 from ...tools.permissions import get_user_info
+
+
+class CategoryList(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+class DistrictListAPIView(generics.ListAPIView):
+    serializer_class = DistrictSerializer
+    queryset = District.objects.all()
+
+    def get_queryset(self):
+        return District.objects.filter(country_id=self.kwargs.get('pk'))
 
 
 class VersionProjectListAPIView(generics.ListAPIView):

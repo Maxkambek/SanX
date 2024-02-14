@@ -2,10 +2,26 @@ from django.db import models
 from api.common.accounts.models import Account
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=233)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+
 class Country(models.Model):
     name = models.CharField(max_length=223)
     flag_img = models.ImageField(upload_to='flags/')
     code = models.CharField(max_length=10, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class District(models.Model):
+    name = models.CharField(max_length=233)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

@@ -3,6 +3,8 @@ from . import views
 
 urlpatterns = [
     path('country-list/', views.CountryListAPIView.as_view(), name='country-list'),
+    path('category-list/', views.CategoryList.as_view(), name='category-list'),
+    path('district-list/<int:pk>/', views.DistrictListAPIView.as_view(), name='district-list'),
     path('direction-list/', views.LocationListAPIView.as_view(), name='direction-list'),
     path('register/', views.RegisterAPIView.as_view(), name='register'),
     path('verify-register/', views.CheckVerifyCodeAPIView.as_view(), name='verify-register'),

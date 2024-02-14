@@ -205,6 +205,10 @@ class OrderListAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
+    def get_queryset(self):
+        queryset = Order.objects.filter(owner=self.request.user)
+        return queryset
+
 
 class OrderDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = Order.objects.all()
