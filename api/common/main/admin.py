@@ -1,15 +1,10 @@
 from django.contrib import admin
 
-from .models import Category, Country, District, Location
+from .models import Category, District, Location
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(Country)
-class CountryAdmin(admin.ModelAdmin):
     pass
 
 
