@@ -4,8 +4,9 @@ from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from .models import DriverWishlist
-from .serializers import WishListSerializer, WishlistCreateSerializer
+from .calculate import filter_nearby_locations
+from .models import DriverWishlist, DriverCurrentLocation
+from .serializers import WishListSerializer, WishlistCreateSerializer, DriverCurrentLocationSerializer
 
 
 class WishlistListAPIView(generics.ListAPIView):
@@ -57,3 +58,45 @@ class DeleteFromWishlistAPIView(generics.DestroyAPIView):
 
     def perform_destroy(self, instance):
         instance.delete()
+
+
+class DriverCurrentLocationAPIView(generics.ListAPIView):
+    serializer_class = DriverCurrentLocationSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get_queryset(self):
+        lat = self.request.query_params.get('lat')
+        long = self.request.query_params.get('long')
+        return filter_nearby_locations(lat, long)
+
+
+class DriverCurrentLocationChangeAPIView(generics.UpdateAPIView):
+    serializer_class = DriverCurrentLocationSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    queryset = DriverCurrentLocation.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = DriverCurrentLocation.objects.filter(user=self.request.user).first()
+        if not instance:
+            instance = DriverCurrentLocation.objects.create(longitude=request.data.get('longitude'),
+                                                            latitude=request.data.get('latitude'))
+            instance.save()
+        instance = DriverCurrentLocation.objects.filter(user=self.request.user).first()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)

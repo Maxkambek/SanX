@@ -1,4 +1,4 @@
-from .models import DriverWishlist
+from .models import DriverWishlist, DriverCurrentLocation
 from rest_framework import serializers
 from api.client.v1.serializers import OrderSerializer
 
@@ -15,3 +15,9 @@ class WishlistCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = DriverWishlist
         fields = ['order']
+
+
+class DriverCurrentLocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DriverCurrentLocation
+        fields = ['longitude', 'latitude', 'status']

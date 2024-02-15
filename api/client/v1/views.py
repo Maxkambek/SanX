@@ -5,6 +5,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from api.client.client_auth.models import ClientAvatar, ClientDateBirth, ClientFullName
 from . import serializers
 from api.client.client_main.models import Order, ReplyDriver
+from .calculate import filter_nearby_locations_order
 from ...common.accounts.models import Account
 
 
@@ -216,6 +217,27 @@ class OrderDetailAPIView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        if self.request.user == instance.owner:
+            return Response({'Permission Denied': 'You cannot edit this'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
+
 
 class ReplyDriverCreateAPIView(generics.CreateAPIView):
     serializer_class = serializers.ReplyDriverSerializer
@@ -284,3 +306,14 @@ class GiveWorkAPIViewForClient(generics.GenericAPIView):
         order.worker_id = user
         order.save()
         return Response({'message': 'Order saved'}, status=status.HTTP_200_OK)
+
+
+class OrderListViewForMap(generics.ListAPIView):
+    serializer_class = serializers.OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get_queryset(self):
+        lat = self.request.query_params.get('lat')
+        lon = self.request.query_params.get('lon')
+        return filter_nearby_locations_order(lat, lon)
