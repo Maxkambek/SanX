@@ -98,8 +98,8 @@ class ChatDetailView(APIView):
             data.append(dict(
                 id=i.id,
                 content=i.content,
-                sender=str(i.sender),
-                receiver=str(i.receiver),
+                sender=str(i.sender.id),
+                # receiver=str(i.receiver.id),
                 created_at=str(i.created_at),
                 is_seen=i.is_seen
             ))
