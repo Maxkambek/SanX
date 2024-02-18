@@ -3,7 +3,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
 from api.driver.driver_tools.calculate import filter_nearby_locations
 from .models import DriverWishlist, DriverCurrentLocation
 from .serializers import WishListSerializer, WishlistCreateSerializer, DriverCurrentLocationSerializer

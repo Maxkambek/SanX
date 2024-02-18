@@ -27,6 +27,7 @@ class Order(models.Model):
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    views = models.PositiveIntegerField(default=0, null=True, blank=True)
     status = models.CharField(choices=STATUS, max_length=123, default='New')
     worker_id = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True)
     longitude = models.DecimalField(max_digits=15, decimal_places=12, null=True, blank=True)
