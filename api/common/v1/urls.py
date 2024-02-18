@@ -18,4 +18,6 @@ urlpatterns = [
     path('chat-create/', views.ChatCreateView.as_view()),
     path('chat-list/', views.ChatListView.as_view()),
     path('chat-list/<int:pk>/', views.ChatDetailView.as_view()),
+    path('contract-create/', views.ContractsAPIView.as_view()),
+    path('contract-list/', views.ContractListAPIView.as_view()),
 ]

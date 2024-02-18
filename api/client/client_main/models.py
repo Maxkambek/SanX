@@ -1,6 +1,6 @@
 from django.db import models
 from api.common.accounts.models import Account
-from api.common.main.models import Location, District
+from api.common.main.models import District
 from api.driver.driver_auth.models import TransportType
 from geopy.geocoders import Nominatim
 
@@ -55,3 +55,14 @@ class ReplyDriver(models.Model):
 
     def __str__(self):
         return self.order.name
+
+
+
+class Contracts(models.Model):
+    contract_num = models.PositiveIntegerField(default=1000)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='contract_order')
+    driver = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='contract_driver')
+    is_active = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.contract_num}'

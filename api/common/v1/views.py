@@ -1,4 +1,5 @@
 from rest_framework import generics, status, permissions, authentication
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -9,9 +10,29 @@ from api.common.main.models import Location, Country, FAQ, News, Banners, Distri
 from api.tools.send_sms import send_sms
 from .serializers import CountrySerializer, FAQSerializer, RegisterSerializer, LoginSerializer, LocationSerializer, \
     VerifyCodeSerializer, LoginVerifySerializer, NewsSerializer, BannersSerializer, DistrictSerializer, \
-    VersionProjectSerializer, CategorySerializer
+    VersionProjectSerializer, CategorySerializer, ContractsSerializer
 from random import randint
+
+from ...client.client_main.models import Contracts
 from ...tools.permissions import get_user_info
+
+
+class ContractsAPIView(generics.CreateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    serializer_class = ContractsSerializer
+    queryset = Contracts.objects.all()
+
+
+class ContractListAPIView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    serializer_class = ContractsSerializer
+
+    def get_queryset(self):
+        driver_id = self.request.query_params.get('driver_id')
+        order_id = self.request.query_params.get('order_id')
+        return Contracts.objects.filter(driver_id=driver_id, order_id=order_id)
 
 
 class CategoryList(generics.ListAPIView):

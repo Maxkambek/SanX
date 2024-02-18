@@ -43,7 +43,7 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'transport_type', 'name', 'location_from', 'location_to',
             'date', 'weight', 'volume_m3', 'price', 'type_payment', 'description',
-            'created_at', 'updated_at', 'status', 'order_files'
+            'created_at', 'updated_at', 'status', 'order_files', 'views'
         ]
 
 

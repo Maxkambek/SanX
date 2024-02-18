@@ -220,6 +220,8 @@ class OrderDetailAPIView(generics.RetrieveUpdateAPIView):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
+        instance.views += 1
+        instance.save()
         if self.request.user == instance.owner:
             return Response({'Permission Denied': 'You cannot edit this'}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)

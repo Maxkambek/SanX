@@ -1,7 +1,15 @@
 from rest_framework import serializers
+
+from api.client.client_main.models import Contracts
 from api.common.accounts.models import Account, VerifyCode
 from api.common.main.models import Country, Location, FAQ, News, Banners, ChatMessage, VersionProject, District
 from api.common.main.models import Category
+
+
+class ContractsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contracts
+        fields = '__all__'
 
 
 class CategorySerializer(serializers.ModelSerializer):
