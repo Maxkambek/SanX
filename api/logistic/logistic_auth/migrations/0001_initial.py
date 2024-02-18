@@ -10,7 +10,6 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('main', '0003_banners_news'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 

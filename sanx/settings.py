@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'api.common.main',
 
     'api.driver.driver_auth',
+    'api.driver.driver_tools',
 
     'api.client.client_auth',
     'api.client.client_main',

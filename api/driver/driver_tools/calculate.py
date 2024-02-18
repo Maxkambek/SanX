@@ -1,5 +1,5 @@
 import math
-from api.driver.main.models import DriverCurrentLocation
+from api.driver.driver_tools.models import DriverCurrentLocation
 
 
 def calculate_distance(lat1, lon1, lat2, lon2):
