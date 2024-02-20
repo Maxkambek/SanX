@@ -15,7 +15,8 @@ class DriverFullNameCreateAPIView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         if self.queryset.filter(user=self.request.user):
-            return Response({'message': "Already Exists"}, status=status.HTTP_409_CONFLICT)
+            q = DriverFullName.objects.filter(user=self.request.user).first()
+            q.delete()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -39,6 +40,8 @@ class DriverFullNameRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     authentication_classes = [JWTAuthentication]
 
     def retrieve(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
         instance = DriverFullName.objects.get(user=self.request.user)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
@@ -71,7 +74,8 @@ class DriverDateBirthCreateAPIView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         if self.queryset.filter(user=self.request.user):
-            return Response({'message': "Already Exists"}, status=status.HTTP_409_CONFLICT)
+            q = DriverDateBirth.objects.filter(user=self.request.user).first()
+            q.delete()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -95,6 +99,8 @@ class DriverDateBirthRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     authentication_classes = [JWTAuthentication]
 
     def retrieve(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
         instance = DriverDateBirth.objects.get(user=self.request.user)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
@@ -127,7 +133,8 @@ class DriverDirectionCreateAPIView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         if self.queryset.filter(user=self.request.user):
-            return Response({'message': "Already Exists"}, status=status.HTTP_409_CONFLICT)
+            q = DriverDirection.objects.filter(user=self.request.user).first()
+            q.delete()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -151,11 +158,15 @@ class DriverDirectionRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     authentication_classes = [JWTAuthentication]
 
     def retrieve(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
         instance = DriverDirection.objects.get(user=self.request.user)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
         partial = kwargs.pop('partial', False)
         instance = DriverDirection.objects.get(user=self.request.user)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
@@ -183,7 +194,8 @@ class DriverAvatarCreateAPIView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         if self.queryset.filter(user=self.request.user):
-            return Response({'message': "Already Exists"}, status=status.HTTP_409_CONFLICT)
+            q = DriverAvatar.objects.filter(user=self.request.user).first()
+            q.delete()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -207,11 +219,15 @@ class DriverAvatarRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     authentication_classes = [JWTAuthentication]
 
     def retrieve(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
         instance = DriverAvatar.objects.get(user=self.request.user)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
         partial = kwargs.pop('partial', False)
         instance = DriverAvatar.objects.get(user=self.request.user)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
@@ -239,7 +255,8 @@ class DriverPassportCreateAPIView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         if self.queryset.filter(user=self.request.user):
-            return Response({'message': "Already Exists"}, status=status.HTTP_409_CONFLICT)
+            q = DriverPassport.objects.filter(user=self.request.user).first()
+            q.delete()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -254,6 +271,41 @@ class DriverPassportCreateAPIView(generics.CreateAPIView):
             return {'Location': str(data[api_settings.URL_FIELD_NAME])}
         except (TypeError, KeyError):
             return {}
+
+
+class DriverPassportRUDAPIView(generics.RetrieveUpdateAPIView):
+    queryset = DriverPassport.objects.all()
+    serializer_class = serializers.DriverPassportSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def retrieve(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
+        instance = DriverPassport.objects.get(user=self.request.user)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
+        partial = kwargs.pop('partial', False)
+        instance = DriverPassport.objects.get(user=self.request.user)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
 
 
 class DriverLicenseCreateAPIView(generics.CreateAPIView):
@@ -264,7 +316,8 @@ class DriverLicenseCreateAPIView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         if self.queryset.filter(user=self.request.user):
-            return Response({'message': "Already Exists"}, status=status.HTTP_409_CONFLICT)
+            q = DriverLicense.objects.filter(user=self.request.user).first()
+            q.delete()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -279,6 +332,41 @@ class DriverLicenseCreateAPIView(generics.CreateAPIView):
             return {'Location': str(data[api_settings.URL_FIELD_NAME])}
         except (TypeError, KeyError):
             return {}
+
+
+class DriverLicenseRUDAPIView(generics.RetrieveUpdateAPIView):
+    serializer_class = serializers.DriverLicenseSerializer
+    queryset = DriverLicense.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def retrieve(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
+        instance = DriverLicense.objects.get(user=self.request.user)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
+        partial = kwargs.pop('partial', False)
+        instance = DriverLicense.objects.get(user=self.request.user)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
 
 
 class DriverCompanyCreateAPIView(generics.CreateAPIView):
@@ -289,7 +377,8 @@ class DriverCompanyCreateAPIView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         if self.queryset.filter(user=self.request.user):
-            return Response({'message': "Already Exists"}, status=status.HTTP_409_CONFLICT)
+            q = DriverCompany.objects.filter(user=self.request.user).first()
+            q.delete()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -304,6 +393,41 @@ class DriverCompanyCreateAPIView(generics.CreateAPIView):
             return {'Location': str(data[api_settings.URL_FIELD_NAME])}
         except (TypeError, KeyError):
             return {}
+
+
+class DriverCompanyRUDAPIView(generics.RetrieveUpdateAPIView):
+    serializer_class = serializers.DriverCompanySerializer
+    queryset = DriverCompany.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def retrieve(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
+        instance = DriverCompany.objects.get(user=self.request.user)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
+        partial = kwargs.pop('partial', False)
+        instance = DriverCompany.objects.get(user=self.request.user)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
 
 
 class DriverPaymentTypeCreateAPIView(generics.CreateAPIView):
@@ -314,7 +438,8 @@ class DriverPaymentTypeCreateAPIView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         if self.queryset.filter(user=self.request.user):
-            return Response({'message': "Already Exists"}, status=status.HTTP_409_CONFLICT)
+            q = DriverPaymentType.objects.filter(user=self.request.user).first()
+            q.delete()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -329,6 +454,41 @@ class DriverPaymentTypeCreateAPIView(generics.CreateAPIView):
             return {'Location': str(data[api_settings.URL_FIELD_NAME])}
         except (TypeError, KeyError):
             return {}
+
+
+class DriverPaymentTypeRUDAPIView(generics.RetrieveUpdateAPIView):
+    serializer_class = serializers.DriverPaymentTypeSerializer
+    queryset = DriverPaymentType.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def retrieve(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
+        instance = DriverPaymentType.objects.get(user=self.request.user)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
+        partial = kwargs.pop('partial', False)
+        instance = DriverPaymentType.objects.get(user=self.request.user)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
 
 
 class DriverTransportDetailsCreateAPIView(generics.CreateAPIView):
@@ -339,7 +499,8 @@ class DriverTransportDetailsCreateAPIView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         if self.queryset.filter(user=self.request.user):
-            return Response({'message': "Already Exists"}, status=status.HTTP_409_CONFLICT)
+            q = DriverTransportDetails.objects.filter(user=self.request.user).first()
+            q.delete()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -354,6 +515,41 @@ class DriverTransportDetailsCreateAPIView(generics.CreateAPIView):
             return {'Location': str(data[api_settings.URL_FIELD_NAME])}
         except (TypeError, KeyError):
             return {}
+
+
+class DriverTransportDetailsRUDAPIView(generics.RetrieveUpdateAPIView):
+    serializer_class = serializers.DriverTransportDetailsSerializer
+    queryset = DriverTransportDetails.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def retrieve(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
+        instance = DriverTransportDetails.objects.get(user=self.request.user)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
+        partial = kwargs.pop('partial', False)
+        instance = DriverTransportDetails.objects.get(user=self.request.user)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
 
 
 class TechnicalPassportCreateAPIView(generics.CreateAPIView):
@@ -364,7 +560,8 @@ class TechnicalPassportCreateAPIView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         if self.queryset.filter(user=self.request.user):
-            return Response({'message': "Already Exists"}, status=status.HTTP_409_CONFLICT)
+            q = TechnicalPassport.objects.filter(user=self.request.user).first()
+            q.delete()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -381,6 +578,41 @@ class TechnicalPassportCreateAPIView(generics.CreateAPIView):
             return {}
 
 
+class TechnicalPassportRUDAPIView(generics.RetrieveUpdateAPIView):
+    queryset = TechnicalPassport.objects.all()
+    serializer_class = serializers.TechnicalPassportSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def retrieve(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
+        instance = TechnicalPassport.objects.get(user=self.request.user)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
+        partial = kwargs.pop('partial', False)
+        instance = TechnicalPassport.objects.get(user=self.request.user)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
+
+
 class TransportImagesCreateAPIView(generics.CreateAPIView):
     serializer_class = serializers.TransportImagesSerializer
     queryset = TransportImages.objects.all()
@@ -389,7 +621,8 @@ class TransportImagesCreateAPIView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         if self.queryset.filter(user=self.request.user):
-            return Response({'message': "Already Exists"}, status=status.HTTP_409_CONFLICT)
+            q = TransportImages.objects.filter(user=self.request.user).first()
+            q.delete()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -413,11 +646,15 @@ class TransportImagesRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     authentication_classes = [JWTAuthentication]
 
     def retrieve(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
         instance = TransportImages.objects.get(user=self.request.user)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
+        if not self.queryset.filter(user=self.request.user):
+            return Response({'message': 'First create before '}, status=status.HTTP_404_NOT_FOUND)
         partial = kwargs.pop('partial', False)
         instance = TransportImages.objects.get(user=self.request.user)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
