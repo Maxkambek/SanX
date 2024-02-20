@@ -13,7 +13,7 @@ class Category(models.Model):
 
 class Country(models.Model):
     name = models.CharField(max_length=223)
-    flag_img = models.ImageField(upload_to='flags/')
+    flag_img = models.URLField(null=True, blank=True)
     code = models.CharField(max_length=10, null=True)
 
     def __str__(self):

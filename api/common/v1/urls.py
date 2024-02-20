@@ -20,4 +20,5 @@ urlpatterns = [
     path('chat-list/<int:pk>/', views.ChatDetailView.as_view()),
     path('contract-create/', views.ContractsAPIView.as_view()),
     path('contract-list/', views.ContractListAPIView.as_view()),
+    path('write/', views.WriteAPIView.as_view())
 ]

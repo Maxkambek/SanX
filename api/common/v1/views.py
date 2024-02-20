@@ -1,3 +1,6 @@
+import json
+
+from django.core.files.base import ContentFile
 from rest_framework import generics, status, permissions, authentication
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
@@ -8,6 +11,7 @@ from api.common.accounts.models import Account, VerifyCode
 from api.common.main.models import Location, Country, FAQ, News, Banners, District, ChatMessage, Chat, VersionProject, \
     Category
 from api.tools.send_sms import send_sms
+from sanx.settings import BASE_DIR
 from .serializers import CountrySerializer, FAQSerializer, RegisterSerializer, LoginSerializer, LocationSerializer, \
     VerifyCodeSerializer, LoginVerifySerializer, NewsSerializer, BannersSerializer, DistrictSerializer, \
     VersionProjectSerializer, CategorySerializer, ContractsSerializer
@@ -15,6 +19,20 @@ from random import randint
 
 from ...client.client_main.models import Contracts
 from ...tools.permissions import get_user_info
+
+
+class WriteAPIView(APIView):
+
+    def get(self, request):
+        f = open(f'{BASE_DIR}/country.json', 'r')
+        obj = json.load(f)
+        for i in obj:
+            country = Country()
+            country.name = i['name']
+            country.code = i['number']
+            country.flag_img = i['flag']
+            country.save()
+        return Response('success', status=200)
 
 
 class ContractsAPIView(generics.CreateAPIView):
