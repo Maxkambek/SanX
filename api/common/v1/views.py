@@ -21,19 +21,6 @@ from ...client.client_main.models import Contracts
 from ...tools.permissions import get_user_info
 
 
-class WriteAPIView(APIView):
-
-    def get(self, request):
-        f = open(f'{BASE_DIR}/country.json', 'r')
-        obj = json.load(f)
-        for i in obj:
-            country = Country()
-            country.name = i['name']
-            country.code = i['number']
-            country.flag_img = i['flag']
-            country.save()
-        return Response('success', status=200)
-
 
 class ContractsAPIView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
