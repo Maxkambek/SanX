@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from api.client.client_auth.models import ClientFullName, ClientDateBirth, ClientAvatar
-from api.client.client_main.models import Order, OrderFiles, ReplyDriver
-from api.driver.driver_auth.serializers import DriverInformationSerializer
+from api.client.client_main.models import Order, OrderFiles, ReplyDriver, ClientWishList
+from api.driver.driver_auth.serializers import DriverInformationSerializer, DriverInfoFullSerializer
 
 
 class ClientFullNameSerializer(serializers.ModelSerializer):
@@ -86,3 +86,17 @@ class GiveWorkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['worker_id', 'order_id']
+
+
+class ClientWishListSerializer(serializers.ModelSerializer):
+    driver = DriverInfoFullSerializer(read_only=True)
+
+    class Meta:
+        model = ClientWishList
+        fields = ['id', 'driver']
+
+
+class ClientWishListCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClientWishList
+        fields = ['driver']

@@ -57,7 +57,6 @@ class ReplyDriver(models.Model):
         return self.order.name
 
 
-
 class Contracts(models.Model):
     contract_num = models.PositiveIntegerField(default=1000)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='contract_order')
@@ -66,3 +65,11 @@ class Contracts(models.Model):
 
     def __str__(self):
         return f'{self.contract_num}'
+
+
+class ClientWishList(models.Model):
+    user = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='client_wish_list')
+    driver = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='client_wish_list_driver')
+
+    def __str__(self):
+        return f'{self.user.phone}'

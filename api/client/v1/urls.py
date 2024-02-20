@@ -15,5 +15,8 @@ urlpatterns = [
     path('reply-driver-list-for-client/', views.ReplyDriverListAPIViewForClient.as_view()),
     path('reply-list-for-driver/', views.ReplyDriverListAPIViewForDriver.as_view()),
     path('give-work/', views.GiveWorkAPIViewForClient.as_view()),
-    path('order-list-for-map/', views.OrderListViewForMap.as_view())
+    path('order-list-for-map/', views.OrderListViewForMap.as_view()),
+    path('wish-list/', views.ClientWishlistListAPIView.as_view()),
+    path('add-to-wishlist/', views.ClientAddToWishlistAPIView.as_view()),
+    path('delete-from-wishlist/<str:pk>/', views.ClientDeleteFromWishlistAPIView.as_view()),
 ]

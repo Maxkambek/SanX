@@ -129,6 +129,8 @@ class DriverTransportDetails(models.Model):
     transport_made_date = models.CharField(max_length=45)
     tons_from = models.PositiveIntegerField()
     tons_to = models.PositiveIntegerField()
+    volume3_from = models.PositiveIntegerField(null=True, blank=True)
+    volume3_to = models.PositiveIntegerField(null=True, blank=True)
 
 
 class TechnicalPassport(models.Model):

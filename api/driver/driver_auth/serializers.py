@@ -54,7 +54,7 @@ class DriverTransportDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = DriverTransportDetails
         fields = ['transport_type', 'model_transport', 'color_transport',
-                  'transport_made_date', 'tons_from', 'tons_to']
+                  'transport_made_date', 'tons_from', 'tons_to', 'volume3_from', 'volume3_to']
 
 
 class TechnicalPassportSerializer(serializers.ModelSerializer):

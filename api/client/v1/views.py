@@ -1,11 +1,13 @@
 from rest_framework import generics, permissions, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from api.client.client_auth.models import ClientAvatar, ClientDateBirth, ClientFullName
 from . import serializers
-from api.client.client_main.models import Order, ReplyDriver
+from api.client.client_main.models import Order, ReplyDriver, ClientWishList
 from .calculate import filter_nearby_locations_order
+from .serializers import ClientWishListCreateSerializer, ClientWishListSerializer
 from ...common.accounts.models import Account
 
 
@@ -319,3 +321,54 @@ class OrderListViewForMap(generics.ListAPIView):
         lat = self.request.query_params.get('lat')
         lon = self.request.query_params.get('lon')
         return filter_nearby_locations_order(lat, lon)
+
+
+class ClientWishlistListAPIView(generics.ListAPIView):
+    queryset = ClientWishList.objects.all()
+    serializer_class = ClientWishListSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get_queryset(self):
+        return ClientWishList.objects.filter(user=self.request.user)
+
+
+class ClientAddToWishlistAPIView(generics.CreateAPIView):
+    queryset = ClientWishList.objects.all()
+    serializer_class = ClientWishListCreateSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def create(self, request, *args, **kwargs):
+        order_id = self.request.data.get('driver')
+        if ClientWishList.objects.filter(user=self.request.user, driver__id=order_id).first():
+            return Response({'message': 'Already exists'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def get_success_headers(self, data):
+        try:
+            return {'Location': str(data[api_settings.URL_FIELD_NAME])}
+        except (TypeError, KeyError):
+            return {}
+
+
+class ClientDeleteFromWishlistAPIView(generics.DestroyAPIView):
+    queryset = ClientWishList.objects.all()
+    serializer_class = ClientWishListSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def destroy(self, request, *args, **kwargs):
+        instance = ClientWishList.objects.get(user_id=self.request.user.id, driver__id=self.kwargs['pk'])
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def perform_destroy(self, instance):
+        instance.delete()
