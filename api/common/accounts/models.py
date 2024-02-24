@@ -38,6 +38,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     role = models.CharField(choices=ROLE, max_length=20, default='Client')
+    bio = models.TextField(null=True, blank=True)
 
     objects = AccountManager()
     USERNAME_FIELD = 'phone'

@@ -23,7 +23,7 @@ def filter_nearby_locations(user_latitude, user_longitude):
     nearby_locations = []
     for location in DriverCurrentLocation.objects.all():
         distance = calculate_distance(user_latitude, user_longitude, location.latitude, location.longitude)
-        if distance <= 10:
+        if distance <= 100:
             nearby_locations.append(location)
 
     return nearby_locations

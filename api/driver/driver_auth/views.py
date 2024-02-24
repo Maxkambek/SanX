@@ -6,6 +6,8 @@ from .models import *
 from . import serializers
 from rest_framework.response import Response
 
+from .serializers import DriverProfileSerializer, DriverProfileChangeSerializer
+
 
 class DriverFullNameCreateAPIView(generics.CreateAPIView):
     serializer_class = serializers.DriverFullNameSerializer
@@ -734,3 +736,51 @@ class DriverCheckAPIView(APIView):
             'images': True if images else False
         }
         return Response(data, status=200)
+
+
+class DriverProfileGetView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    serializer_class = DriverProfileSerializer
+
+    def get_queryset(self):
+        account = Account.objects.filter(id=self.request.user.id)
+        return account
+
+
+class DriverProfileUpdateView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    serializer_class = DriverProfileChangeSerializer
+    queryset = Account.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        phone = self.request.data['phone']
+        name = self.request.data['name']
+        lastname = self.request.data['last_name']
+        surname = self.request.data['surname']
+        date_birth = self.request.data['date_birth']
+        direction_from = self.request.data['direction_from']
+        direction_to = self.request.data['direction_to']
+        bio = self.request.data['bio']
+        instance = Account.objects.filter(id=self.request.user.id).first()
+        if phone:
+            instance.phone = phone
+            instance.bio = bio
+            instance.save()
+        dfl = DriverFullName.objects.filter(user=self.request.user).first()
+        if dfl and name and surname and lastname:
+            dfl.name = name
+            dfl.surname = surname
+            dfl.last_name = lastname
+            dfl.save()
+        ddb = DriverDateBirth.objects.filter(user=self.request.user).first()
+        if ddb and date_birth:
+            ddb.date = date_birth
+            ddb.save()
+        dd = DriverDirection.objects.filter(user=self.request.user).first()
+        if dd and direction_from and direction_to:
+            dd.direction_from = direction_from
+            dd.direction_to = direction_to
+            dd.save()
+        return Response({'message': 'Successfully updated'}, status=200)

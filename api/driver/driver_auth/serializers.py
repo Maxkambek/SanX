@@ -120,3 +120,27 @@ class DriverInfoFullSerializer(serializers.ModelSerializer):
         model = Account
         fields = ['driver_full_name', 'driver_avatar', 'driver_direction', 'driver_company', 'driver_payment_type',
                   'driver_transport_images']
+
+
+class DriverProfileSerializer(serializers.ModelSerializer):
+    driver_full_name = DriverFullNameSerializer(read_only=True, many=False)
+    driver_avatar = DriverAvatarSerializer(read_only=True, many=False)
+    driver_direction = DriverDirectionSerializer(read_only=True, many=False)
+    driver_date_birth = DriverDateBirthSerializer(read_only=True, many=False)
+
+    class Meta:
+        model = Account
+        fields = ['driver_full_name', 'driver_avatar', 'driver_direction', 'driver_date_birth', 'phone', 'bio']
+
+
+class DriverProfileChangeSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=123)
+    last_name = serializers.CharField(max_length=123)
+    surname = serializers.CharField(max_length=123)
+    date_birth = serializers.DateField()
+    direction_from = serializers.IntegerField()
+    direction_to = serializers.IntegerField()
+
+    class Meta:
+        model = Account
+        fields = ['phone', 'bio', 'name', 'last_name', 'surname', 'date_birth', 'direction_from', 'direction_to']

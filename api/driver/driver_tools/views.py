@@ -67,7 +67,7 @@ class DriverCurrentLocationAPIView(generics.ListAPIView):
     def get_queryset(self):
         lat = self.request.query_params.get('lat')
         long = self.request.query_params.get('long')
-        return filter_nearby_locations(lat, long)
+        return filter_nearby_locations(float(lat), float(long))
 
 
 class DriverCurrentLocationChangeAPIView(generics.UpdateAPIView):
@@ -78,10 +78,11 @@ class DriverCurrentLocationChangeAPIView(generics.UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
-        instance = DriverCurrentLocation.objects.filter(user=self.request.user).first()
+        instance = DriverCurrentLocation.objects.filter(user=self.request.user)
         if not instance:
             instance = DriverCurrentLocation.objects.create(longitude=request.data.get('longitude'),
-                                                            latitude=request.data.get('latitude'))
+                                                            latitude=request.data.get('latitude'),
+                                                            user_id=self.request.user.id)
             instance.save()
         instance = DriverCurrentLocation.objects.filter(user=self.request.user).first()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
