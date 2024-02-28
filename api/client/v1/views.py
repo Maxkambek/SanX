@@ -9,6 +9,9 @@ from api.client.client_main.models import Order, ReplyDriver, ClientWishList
 from .calculate import filter_nearby_locations_order
 from .serializers import ClientWishListCreateSerializer, ClientWishListSerializer
 from ...common.accounts.models import Account
+from django.db.models import Q
+
+from ...tools.pagination import LargeResultsSetPagination
 
 
 class ClientFullNameCreateAPIView(generics.CreateAPIView):
@@ -205,12 +208,6 @@ class OrderCreateAPIView(generics.CreateAPIView):
 class OrderListAPIView(generics.ListAPIView):
     queryset = Order.objects.all()
     serializer_class = serializers.OrderSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
-
-    def get_queryset(self):
-        queryset = Order.objects.filter(owner=self.request.user)
-        return queryset
 
 
 class OrderDetailAPIView(generics.RetrieveUpdateAPIView):
@@ -314,8 +311,6 @@ class GiveWorkAPIViewForClient(generics.GenericAPIView):
 
 class OrderListViewForMap(generics.ListAPIView):
     serializer_class = serializers.OrderSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
 
     def get_queryset(self):
         lat = self.request.query_params.get('lat')
@@ -372,3 +367,62 @@ class ClientDeleteFromWishlistAPIView(generics.DestroyAPIView):
 
     def perform_destroy(self, instance):
         instance.delete()
+
+
+class FilterOrderListAPIView(generics.ListAPIView):
+    serializer_class = serializers.OrderSerializer
+    pagination_class = LargeResultsSetPagination
+
+    def get_queryset(self):
+        search = self.request.query_params.get('search')
+        weight_from = self.request.query_params.get('weight_from')
+        weight_to = self.request.query_params.get('weight_to')
+        location_from = self.request.query_params.get('location_from')
+        location_to = self.request.query_params.get('location_to')
+        volume_from = self.request.query_params.get('volume_from')
+        volume_to = self.request.query_params.get('volume_to')
+        date_from = self.request.query_params.get('date_from')
+        date_to = self.request.query_params.get('date_to')
+        type_payment = self.request.query_params.get('type_payment')
+        price_from = self.request.query_params.get('price_from')
+        price_to = self.request.query_params.get('price_to')
+        search_con = Q()
+        if search:
+            search_con = Q(name__icontains=search)
+        weight_from_con = Q()
+        if weight_from:
+            weight_from_con = Q(weight__gt=weight_from)
+        weight_to_con = Q()
+        if weight_to:
+            weight_to_con = Q(weight__lt=weight_to)
+        location_from_con = Q()
+        if location_from:
+            location_from_con = Q(location_from_id=location_from)
+        location_to_con = Q()
+        if location_to:
+            location_to_con = Q(location_to_id=location_to)
+        volume_from_con = Q()
+        if volume_from:
+            volume_from_con = Q(volume_m3__gt=volume_from)
+        volume_to_con = Q()
+        if volume_to:
+            volume_to_con = Q(volume_m3__lt=volume_to)
+        date_from_con = Q()
+        if date_from:
+            date_from_con = Q(date__gt=date_from)
+        date_to_con = Q()
+        if date_to:
+            date_to_con = Q(date__lt=date_to)
+        type_payment_con = Q()
+        if type_payment:
+            type_payment_con = Q(type_payment=type_payment)
+        price_from_con = Q()
+        if price_from:
+            price_from_con = Q(price__gt=price_from)
+        price_to_con = Q()
+        if price_to:
+            price_to_con = Q(price__lt=price_to)
+        queryset = Order.objects.filter(search_con, weight_from_con, weight_to_con, location_from_con, location_to_con,
+                                        volume_from_con, volume_to_con, date_from_con, date_to_con, type_payment_con,
+                                        price_from_con, price_to_con)
+        return queryset

@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import generics, permissions, status
 from rest_framework.settings import api_settings
 from rest_framework.views import APIView
@@ -7,6 +8,7 @@ from . import serializers
 from rest_framework.response import Response
 
 from .serializers import DriverProfileSerializer, DriverProfileChangeSerializer
+from ...tools.pagination import LargeResultsSetPagination
 
 
 class DriverFullNameCreateAPIView(generics.CreateAPIView):
@@ -784,3 +786,37 @@ class DriverProfileUpdateView(generics.UpdateAPIView):
             dd.direction_to = direction_to
             dd.save()
         return Response({'message': 'Successfully updated'}, status=200)
+
+
+class DriverFilterAPIView(generics.ListAPIView):
+    serializer_class = DriverProfileSerializer
+    pagination_class = LargeResultsSetPagination
+
+    def get_queryset(self):
+        search = self.request.query_params.get('search')
+        weight_from = self.request.query_params.get('weight_from')
+        weight_to = self.request.query_params.get('weight_to')
+        location_from = self.request.query_params.get('location_from')
+        location_to = self.request.query_params.get('location_to')
+        type_payment = self.request.query_params.get('type_payment')
+        search_con = Q()
+        if search:
+            search_con = Q(driver_full_name__name__icontains=search)
+        weight_from_con = Q()
+        if weight_from:
+            weight_from_con = Q(driver_transport_details__tons_from__gt=weight_from)
+        weight_to_con = Q()
+        if weight_to:
+            weight_to_con = Q(driver_transport_details__tons_from__lt=weight_to)
+        location_from_con = Q()
+        if location_from:
+            location_from_con = Q(driver_direction__direction_from_id=location_from)
+        location_to_con = Q()
+        if location_to:
+            location_to_con = Q(driver_direction__direction_to_id=location_to)
+        type_payment_con = Q()
+        if type_payment:
+            type_payment_con = Q(driver_payment_type__payment_type=type_payment)
+        queryset = Account.objects.filter(search_con, weight_from_con, weight_to_con, location_from_con,
+                                          location_to_con, type_payment_con)
+        return queryset

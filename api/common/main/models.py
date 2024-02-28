@@ -94,3 +94,5 @@ class VersionProject(models.Model):
 
     def __str__(self):
         return self.version_text
+
+

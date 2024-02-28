@@ -5,11 +5,22 @@ from ...client.client_main.models import Order
 from ...client.v1.serializers import OrderSerializer
 from ...common.accounts.models import Account
 from ...driver.driver_auth.serializers import DriverInfoFullSerializer
+from ...tools.pagination import LargeResultsSetPagination
 
 
 class LogisticCompanyListAPIView(generics.ListAPIView):
-    queryset = LogisticCompany.objects.all()
     serializer_class = LogisticCompanySerializer
+    pagination_class = LargeResultsSetPagination
+
+    def get_queryset(self):
+        queryset = LogisticCompany.objects.all()
+        search = self.request.query_params.get('search')
+        country = self.request.query_params.get('country_id')
+        if search:
+            queryset = queryset.filter(company_name__icontains=search)
+        if country:
+            queryset = queryset.filter(country_id=country)
+        return queryset
 
 
 class LogisticCompanyDetailAPIView(generics.ListAPIView):

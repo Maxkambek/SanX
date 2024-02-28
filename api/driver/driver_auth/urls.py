@@ -31,5 +31,6 @@ urlpatterns = [
     path('colors/', views.ColorTransportListAPIView.as_view()),
     path('check-online-register/', views.DriverCheckAPIView.as_view()),
     path('profile/', views.DriverProfileGetView.as_view()),
-    path('profile-update/', views.DriverProfileUpdateView.as_view())
+    path('profile-update/', views.DriverProfileUpdateView.as_view()),
+    path('driver-filters/', views.DriverFilterAPIView.as_view())
 ]

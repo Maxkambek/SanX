@@ -1,9 +1,15 @@
 from rest_framework import serializers
-
 from api.client.client_main.models import Contracts
 from api.common.accounts.models import Account, VerifyCode
-from api.common.main.models import Country, Location, FAQ, News, Banners, ChatMessage, VersionProject, District
+from api.common.main.models import Country, Location, FAQ, News, Banners, VersionProject, \
+    District
 from api.common.main.models import Category
+
+#
+# class DriverClientOrderContractSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = DriverClientOrderContract
+#         fields = '__all__'
 
 
 class ContractsSerializer(serializers.ModelSerializer):

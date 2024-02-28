@@ -22,7 +22,7 @@ class Order(models.Model):
     date = models.DateField()
     weight = models.PositiveIntegerField(default=0)
     volume_m3 = models.PositiveIntegerField(default=0, null=True, blank=True)
-    price = models.DecimalField(max_digits=15, decimal_places=2)
+    price = models.IntegerField(null=True)
     type_payment = models.CharField(max_length=123)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -52,6 +52,7 @@ class ReplyDriver(models.Model):
     owner = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='driver_click')
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_clicks')
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_price = models.PositiveIntegerField(default=0, null=True, blank=True)
 
     def __str__(self):
         return self.order.name
@@ -73,3 +74,15 @@ class ClientWishList(models.Model):
 
     def __str__(self):
         return f'{self.user.phone}'
+
+#
+# class DriverClientOrderContract(models.Model):
+#     order_id = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True,
+#                                  related_name='contract_order_id')
+#     sender = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='contract_sender')
+#     receiver = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='contract_receiver')
+#     updated_price = models.PositiveIntegerField(default=order_id.price)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#
+#     def __str__(self):
+#         return self.sender.phone

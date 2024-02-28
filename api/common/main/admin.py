@@ -1,6 +1,11 @@
 from django.contrib import admin
 
-from .models import Category, District
+from .models import Category, District, FAQ
+
+
+@admin.register(FAQ)
+class FAQAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(Category)
@@ -11,4 +16,3 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(District)
 class DistrictAdmin(admin.ModelAdmin):
     pass
-
