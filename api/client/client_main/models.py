@@ -35,12 +35,12 @@ class Order(models.Model):
 
     def __str__(self):
         return self.name
-
-    def save(self, *args, **kwargs):
-        super(Order, self).save(*args, **kwargs)
-        location = geolocator.geocode(f"{self.location_from.name}, {self.location_from.country.name}")
-        self.longitude = location.longitude
-        self.latitude = location.latitude
+    #
+    # def save(self, *args, **kwargs):
+    #     super(Order, self).save(*args, **kwargs)
+    #     location = geolocator.geocode(f"{self.location_from.name}, {self.location_from.country.name}")
+    #     self.longitude = location.longitude
+    #     self.latitude = location.latitude
 
 
 class OrderFiles(models.Model):

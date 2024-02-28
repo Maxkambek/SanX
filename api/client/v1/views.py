@@ -210,7 +210,7 @@ class OrderListAPIView(generics.ListAPIView):
     serializer_class = serializers.OrderSerializer
 
 
-class OrderDetailAPIView(generics.RetrieveUpdateAPIView):
+class OrderUpdateAPIView(generics.UpdateAPIView):
     queryset = Order.objects.all()
     serializer_class = serializers.OrderDetailSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -238,6 +238,11 @@ class OrderDetailAPIView(generics.RetrieveUpdateAPIView):
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
+
+
+class OrderDetailAPIView(generics.RetrieveAPIView):
+    queryset = Order.objects.all()
+    serializer_class = serializers.OrderDetailSerializer
 
 
 class ReplyDriverCreateAPIView(generics.CreateAPIView):

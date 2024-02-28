@@ -11,6 +11,7 @@ urlpatterns = [
     path('order-create/', views.OrderCreateAPIView.as_view()),
     path('order-list/', views.OrderListAPIView.as_view()),
     path('order/<int:pk>/', views.OrderDetailAPIView.as_view()),
+    path('order-update/<int:pk>/', views.OrderUpdateAPIView.as_view()),
     path('reply-driver-create/', views.ReplyDriverCreateAPIView.as_view()),
     path('reply-driver-list-for-client/', views.ReplyDriverListAPIViewForClient.as_view()),
     path('reply-list-for-driver/', views.ReplyDriverListAPIViewForDriver.as_view()),
