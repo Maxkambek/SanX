@@ -48,14 +48,14 @@ class MyOrdersOtClicksSerializer(serializers.ModelSerializer):
 
 
 class OrderDetailSerializer(serializers.ModelSerializer):
-    order_files = OrderFilesSerializer(many=True)
     order_clicks = MyOrdersOtClicksSerializer(many=True)
 
     class Meta:
         model = Order
         fields = ['id', 'transport_type', 'name', 'location_from', 'location_to',
-                  'date', 'weight', 'price', 'type_payment', 'description',
-                  'created_at', 'updated_at', 'status', 'order_files', 'order_clicks']
+                  'date', 'weight', 'price', 'type_payment', 'description', 'file_1', 'file_2', 'file_3', 'file_4',
+                  'file_5', 'file_6',
+                  'created_at', 'updated_at', 'status', 'order_clicks']
 
 
 class ReplyDriverSerializer(serializers.ModelSerializer):
