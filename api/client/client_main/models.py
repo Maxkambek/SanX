@@ -1,6 +1,6 @@
 from django.db import models
 from api.common.accounts.models import Account
-from api.common.main.models import District
+from api.common.main.models import District, Country
 from api.driver.driver_auth.models import TransportType
 from geopy.geocoders import Nominatim
 
@@ -17,8 +17,8 @@ class Order(models.Model):
     owner = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='user_orders')
     transport_type = models.ForeignKey(TransportType, on_delete=models.CASCADE, related_name="order_transport_type")
     name = models.CharField(max_length=333)
-    location_from = models.ForeignKey(District, on_delete=models.CASCADE, related_name="location_from_order", null=True)
-    location_to = models.ForeignKey(District, on_delete=models.CASCADE, related_name="location_to_order", null=True)
+    location_from = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="location_from_order", null=True)
+    location_to = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="location_to_order", null=True)
     date = models.DateField()
     weight = models.PositiveIntegerField(default=0)
     volume_m3 = models.PositiveIntegerField(default=0, null=True, blank=True)

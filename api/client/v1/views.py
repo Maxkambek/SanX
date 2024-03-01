@@ -22,7 +22,8 @@ class ClientFullNameCreateAPIView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         if ClientFullName.objects.filter(user=self.request.user).first():
-            return Response({'message': "Already exists"}, status=status.HTTP_409_CONFLICT)
+            q = ClientFullName.objects.filter(user=self.request.user).first()
+            q.delete()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -78,7 +79,8 @@ class ClientAvatarCreateAPIView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         if ClientAvatar.objects.filter(user=self.request.user).first():
-            return Response({'message': "Already exists"}, status=status.HTTP_409_CONFLICT)
+            q = ClientAvatar.objects.filter(user=self.request.user).first()
+            q.delete()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -134,7 +136,8 @@ class ClientDateBirthCreateAPIView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         if ClientDateBirth.objects.filter(user=self.request.user).first():
-            return Response({'message': "Already exists"}, status=status.HTTP_409_CONFLICT)
+            q = ClientDateBirth.objects.filter(user=self.request.user).first()
+            q.delete()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
