@@ -29,21 +29,13 @@ class OrderFilesSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    order_files = OrderFilesSerializer(many=True)
-
-    def create(self, validated_data):
-        files_data = validated_data.pop('order_files')
-        order = Order.objects.create(**validated_data)
-        for file in files_data:
-            OrderFiles.objects.create(order=order, file=file)
-        return order
-
     class Meta:
         model = Order
         fields = [
-            'id', 'transport_type', 'name', 'location_from', 'location_to',
+            'id', 'file_1', 'file_2', 'file_3', 'file_4', 'file_5', 'file_6', 'transport_type', 'name', 'location_from',
+            'location_to',
             'date', 'weight', 'volume_m3', 'price', 'type_payment', 'description',
-            'created_at', 'updated_at', 'status', 'order_files', 'views', 'longitude', 'latitude'
+            'created_at', 'updated_at', 'status', 'views', 'longitude', 'latitude'
         ]
 
 

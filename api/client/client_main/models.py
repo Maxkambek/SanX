@@ -1,7 +1,11 @@
+from io import BytesIO
+
+from PIL import Image
 from django.db import models
 from api.common.accounts.models import Account
 from api.common.main.models import District, Country
 from api.driver.driver_auth.models import TransportType
+from django.core.files.base import ContentFile
 from geopy.geocoders import Nominatim
 
 geolocator = Nominatim(user_agent="myMahkamApps")
@@ -30,8 +34,14 @@ class Order(models.Model):
     views = models.PositiveIntegerField(default=0, null=True, blank=True)
     status = models.CharField(choices=STATUS, max_length=123, default='New')
     worker_id = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True)
-    longitude = models.DecimalField(max_digits=15, decimal_places=12, null=True, blank=True)
-    latitude = models.DecimalField(max_digits=15, decimal_places=12, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=30, decimal_places=25, null=True, blank=True)
+    latitude = models.DecimalField(max_digits=30, decimal_places=25, null=True, blank=True)
+    file_1 = models.FileField(upload_to='files/', null=True, blank=True)
+    file_2 = models.FileField(upload_to='files/', null=True, blank=True)
+    file_3 = models.FileField(upload_to='files/', null=True, blank=True)
+    file_4 = models.FileField(upload_to='files/', null=True, blank=True)
+    file_5 = models.FileField(upload_to='files/', null=True, blank=True)
+    file_6 = models.FileField(upload_to='files/', null=True, blank=True)
 
     def __str__(self):
         return self.name
