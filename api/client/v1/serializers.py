@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from api.client.client_auth.models import ClientFullName, ClientDateBirth, ClientAvatar
 from api.client.client_main.models import Order, OrderFiles, ReplyDriver, ClientWishList
+from api.common.v1.serializers import CountrySerializer2
 from api.driver.driver_auth.serializers import DriverInformationSerializer, DriverInfoFullSerializer
+from api.common.accounts.models import Account
 
 
 class ClientFullNameSerializer(serializers.ModelSerializer):
@@ -28,7 +30,43 @@ class OrderFilesSerializer(serializers.ModelSerializer):
         fields = ['id', 'file']
 
 
+class ClientProfileSerializer(serializers.ModelSerializer):
+    client_full_name = ClientFullNameSerializer(many=False)
+    client_avatar = ClientAvatarSerializer(many=False)
+    client_birth = ClientDateBirthSerializer(many=False)
+
+    class Meta:
+        model = Account
+        fields = ['id', 'phone', 'bio', 'client_full_name', 'client_avatar', 'client_birth']
+
+
+class ClientProfileChangeSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=123)
+    last_name = serializers.CharField(max_length=123)
+    surname = serializers.CharField(max_length=123)
+    date_birth = serializers.DateField()
+    avatar = serializers.FileField(allow_empty_file=True)
+
+    class Meta:
+        model = Account
+        fields = ['phone', 'bio', 'name', 'last_name', 'surname', 'date_birth', 'avatar']
+
+
 class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = [
+            'id', 'file_1', 'file_2', 'file_3', 'file_4', 'file_5', 'file_6', 'transport_type', 'name', 'location_from',
+            'location_to',
+            'date', 'weight', 'volume_m3', 'price', 'type_payment', 'description',
+            'created_at', 'updated_at', 'status', 'views', 'longitude', 'latitude'
+        ]
+
+
+class OrderListSerializer(serializers.ModelSerializer):
+    location_from = CountrySerializer2(many=False)
+    location_to = CountrySerializer2(many=False)
+
     class Meta:
         model = Order
         fields = [
@@ -49,6 +87,8 @@ class MyOrdersOtClicksSerializer(serializers.ModelSerializer):
 
 class OrderDetailSerializer(serializers.ModelSerializer):
     order_clicks = MyOrdersOtClicksSerializer(many=True)
+    location_from = CountrySerializer2(many=False)
+    location_to = CountrySerializer2(many=False)
 
     class Meta:
         model = Order

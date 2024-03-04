@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from ...common.v1.serializers import CountrySerializer2
 
 
 class DriverFullNameSerializer(serializers.ModelSerializer):
@@ -15,6 +16,15 @@ class DriverDateBirthSerializer(serializers.ModelSerializer):
 
 
 class DriverDirectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DriverDirection
+        fields = ['direction_from', 'direction_to']
+
+
+class DriverDirectionListSerializer(serializers.ModelSerializer):
+    direction_from = CountrySerializer2(many=False)
+    direction_to = CountrySerializer2(many=False)
+
     class Meta:
         model = DriverDirection
         fields = ['direction_from', 'direction_to']
@@ -111,7 +121,7 @@ class DriverInformationSerializer(serializers.ModelSerializer):
 class DriverInfoFullSerializer(serializers.ModelSerializer):
     driver_full_name = DriverFullNameSerializer(read_only=True, many=False)
     driver_avatar = DriverAvatarSerializer(read_only=True, many=False)
-    driver_direction = DriverDirectionSerializer(read_only=True, many=False)
+    driver_direction = DriverDirectionListSerializer(read_only=True, many=False)
     driver_company = DriverCompanySerializer(read_only=True, many=False)
     driver_payment_type = DriverPaymentTypeSerializer(read_only=True, many=False)
     driver_transport_images = TransportImagesSerializer(read_only=True, many=True)
@@ -125,7 +135,7 @@ class DriverInfoFullSerializer(serializers.ModelSerializer):
 class DriverProfileSerializer(serializers.ModelSerializer):
     driver_full_name = DriverFullNameSerializer(read_only=True, many=False)
     driver_avatar = DriverAvatarSerializer(read_only=True, many=False)
-    driver_direction = DriverDirectionSerializer(read_only=True, many=False)
+    driver_direction = DriverDirectionListSerializer(read_only=True, many=False)
     driver_date_birth = DriverDateBirthSerializer(read_only=True, many=False)
 
     class Meta:

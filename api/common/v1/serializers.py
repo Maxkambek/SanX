@@ -5,6 +5,7 @@ from api.common.main.models import Country, Location, FAQ, News, Banners, Versio
     District
 from api.common.main.models import Category
 
+
 #
 # class DriverClientOrderContractSerializer(serializers.ModelSerializer):
 #     class Meta:
@@ -52,6 +53,12 @@ class CountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
         fields = ['id', 'name', 'flag_img', 'code']
+
+
+class CountrySerializer2(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = ['id', 'name']
 
 
 class DistrictSerializer(serializers.ModelSerializer):

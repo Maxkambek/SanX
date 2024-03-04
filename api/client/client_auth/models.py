@@ -13,7 +13,7 @@ class ClientFullName(models.Model):
 
 
 class ClientDateBirth(models.Model):
-    user = models.OneToOneField(Account, on_delete=models.CASCADE)
+    user = models.OneToOneField(Account, on_delete=models.CASCADE, related_name="client_birth")
     birth_date = models.DateField()
 
     def __str__(self):

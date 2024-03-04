@@ -2,12 +2,14 @@ from rest_framework import generics, permissions, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
+from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from api.client.client_auth.models import ClientAvatar, ClientDateBirth, ClientFullName
 from . import serializers
 from api.client.client_main.models import Order, ReplyDriver, ClientWishList
 from .calculate import filter_nearby_locations_order
-from .serializers import ClientWishListCreateSerializer, ClientWishListSerializer
+from .serializers import ClientWishListCreateSerializer, ClientWishListSerializer, ClientProfileSerializer, \
+    ClientProfileChangeSerializer
 from ...common.accounts.models import Account
 from django.db.models import Q
 
@@ -210,12 +212,12 @@ class OrderCreateAPIView(generics.CreateAPIView):
 
 class OrderListAPIView(generics.ListAPIView):
     queryset = Order.objects.all()
-    serializer_class = serializers.OrderSerializer
+    serializer_class = serializers.OrderListSerializer
 
 
 class OrderUpdateAPIView(generics.UpdateAPIView):
     queryset = Order.objects.all()
-    serializer_class = serializers.OrderDetailSerializer
+    serializer_class = serializers.OrderSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -434,3 +436,51 @@ class FilterOrderListAPIView(generics.ListAPIView):
                                         volume_from_con, volume_to_con, date_from_con, date_to_con, type_payment_con,
                                         price_from_con, price_to_con)
         return queryset
+
+
+class ClientProfileAPIView(generics.ListAPIView):
+    serializer_class = ClientProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get_queryset(self):
+        account = Account.objects.filter(id=self.request.user.id)
+        return account
+
+
+class ClientProfileUpdateView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    serializer_class = ClientProfileChangeSerializer
+    queryset = Account.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        phone = self.request.data['phone']
+        name = self.request.data['name']
+        lastname = self.request.data['last_name']
+        surname = self.request.data['surname']
+        date_birth = self.request.data['date_birth']
+        avatar = self.request.data['avatar']
+        bio = self.request.data['bio']
+        instance = Account.objects.filter(id=self.request.user.id).first()
+        if phone:
+            instance.phone = phone
+            instance.save()
+        if bio:
+            instance.bio = bio
+            instance.save()
+        cfl = ClientFullName.objects.filter(user=self.request.user).first()
+        if cfl and name and surname and lastname:
+            cfl.name = name
+            cfl.surname = surname
+            cfl.last_name = lastname
+            cfl.save()
+        ddb = ClientDateBirth.objects.filter(user=self.request.user).first()
+        if ddb and date_birth:
+            ddb.date = date_birth
+            ddb.save()
+        dd = ClientAvatar.objects.filter(user=self.request.user).first()
+        if dd and avatar:
+            dd.avatar = avatar
+            dd.save()
+        return Response({'message': 'Successfully updated'}, status=200)

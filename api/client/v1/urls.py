@@ -20,5 +20,7 @@ urlpatterns = [
     path('wish-list/', views.ClientWishlistListAPIView.as_view()),
     path('add-to-wishlist/', views.ClientAddToWishlistAPIView.as_view()),
     path('delete-from-wishlist/<str:pk>/', views.ClientDeleteFromWishlistAPIView.as_view()),
-    path('order-filter/', views.FilterOrderListAPIView.as_view())
+    path('order-filter/', views.FilterOrderListAPIView.as_view()),
+    path('client-profile/', views.ClientProfileAPIView.as_view()),
+    path('client-profile-update/', views.ClientProfileUpdateView.as_view()),
 ]

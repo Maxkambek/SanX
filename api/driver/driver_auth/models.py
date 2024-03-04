@@ -67,8 +67,8 @@ class DriverDateBirth(models.Model):
 
 class DriverDirection(models.Model):
     user = models.OneToOneField(Account, on_delete=models.CASCADE, related_name="driver_direction")
-    direction_from = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="direction_from")
-    direction_to = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="direction_to")
+    direction_from = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True, related_name="direction_from")
+    direction_to = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True, related_name="direction_to")
 
     def __str__(self):
         return f"{self.direction_from} {self.direction_to}"

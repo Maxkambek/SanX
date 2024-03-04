@@ -1,11 +1,9 @@
 from io import BytesIO
-
 from PIL import Image
 from django.db import models
 from api.common.accounts.models import Account
 from api.common.main.models import District, Country
 from api.driver.driver_auth.models import TransportType
-from django.core.files.base import ContentFile
 from geopy.geocoders import Nominatim
 
 geolocator = Nominatim(user_agent="myMahkamApps")
@@ -45,12 +43,6 @@ class Order(models.Model):
 
     def __str__(self):
         return self.name
-    #
-    # def save(self, *args, **kwargs):
-    #     super(Order, self).save(*args, **kwargs)
-    #     location = geolocator.geocode(f"{self.location_from.name}, {self.location_from.country.name}")
-    #     self.longitude = location.longitude
-    #     self.latitude = location.latitude
 
 
 class OrderFiles(models.Model):
@@ -85,7 +77,7 @@ class ClientWishList(models.Model):
     def __str__(self):
         return f'{self.user.phone}'
 
-#
+
 # class DriverClientOrderContract(models.Model):
 #     order_id = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True,
 #                                  related_name='contract_order_id')
