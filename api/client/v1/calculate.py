@@ -22,9 +22,8 @@ def calculate_distance(lat1, lon1, lat2, lon2):
 def filter_nearby_locations_order(user_latitude, user_longitude):
     nearby_locations = []
     for location in Order.objects.all():
-        print(location)
-        distance = calculate_distance(user_latitude, user_longitude, location.latitude, location.longitude)
-        if distance <= 100:
-            nearby_locations.append(location)
-
+        if location.latitude and location.longitude:
+            distance = calculate_distance(user_latitude, user_longitude, location.latitude, location.longitude)
+            if distance <= 100:
+                nearby_locations.append(location)
     return nearby_locations
