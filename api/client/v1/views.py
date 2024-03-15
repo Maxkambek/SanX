@@ -6,10 +6,10 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from api.client.client_auth.models import ClientAvatar, ClientDateBirth, ClientFullName
 from . import serializers
-from api.client.client_main.models import Order, ReplyDriver, ClientWishList
+from api.client.client_main.models import Order, ReplyDriver, ClientWishList, DriverClientOrderContract
 from .calculate import filter_nearby_locations_order
 from .serializers import ClientWishListCreateSerializer, ClientWishListSerializer, ClientProfileSerializer, \
-    ClientProfileChangeSerializer
+    ClientProfileChangeSerializer, DriverClientContractSerializer, DriverClientContractCreateSerializer
 from ...common.accounts.models import Account
 from django.db.models import Q
 
@@ -484,3 +484,52 @@ class ClientProfileUpdateView(generics.UpdateAPIView):
             dd.avatar = avatar
             dd.save()
         return Response({'message': 'Successfully updated'}, status=200)
+
+
+class DriverClientContractAPIView(generics.ListAPIView):
+    serializer_class = DriverClientContractSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get_queryset(self):
+        queryset = DriverClientOrderContract.objects.all()
+        sender_id = self.request.query_params.get('sender_id')
+        receiver_id = self.request.query_params.get('receiver_id')
+        order_id = self.request.query_params.get('order_id')
+        if sender_id:
+            queryset = queryset.filter(sender_id=sender_id)
+        if receiver_id:
+            queryset = queryset.filter(receiver_id=receiver_id)
+        if order_id:
+            queryset = queryset.filter(order_id_id=order_id)
+        return queryset
+
+
+class DriverClientContractCreateAPIView(generics.CreateAPIView):
+    serializer_class = DriverClientContractCreateSerializer
+    queryset = DriverClientOrderContract.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        serializer.save(sender=self.request.user)
+
+    def get_success_headers(self, data):
+        try:
+            return {'Location': str(data[api_settings.URL_FIELD_NAME])}
+        except (TypeError, KeyError):
+            return {}
+
+
+class DriverClientContractUpdateAPIView(generics.RetrieveUpdateAPIView):
+    serializer_class = DriverClientContractSerializer
+    queryset = DriverClientOrderContract.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]

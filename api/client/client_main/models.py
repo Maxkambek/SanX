@@ -78,13 +78,18 @@ class ClientWishList(models.Model):
         return f'{self.user.phone}'
 
 
-# class DriverClientOrderContract(models.Model):
-#     order_id = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True,
-#                                  related_name='contract_order_id')
-#     sender = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='contract_sender')
-#     receiver = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='contract_receiver')
-#     updated_price = models.PositiveIntegerField(default=order_id.price)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#
-#     def __str__(self):
-#         return self.sender.phone
+class DriverClientOrderContract(models.Model):
+    order_id = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True,
+                                 related_name='contract_order_id')
+    sender = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='contract_sender')
+    receiver = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='contract_receiver')
+    updated_price = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.BooleanField(default=False)
+
+    @property
+    def default_price(self):
+        return self.order_id.price
+
+    def __str__(self):
+        return self.sender.phone

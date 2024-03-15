@@ -23,4 +23,7 @@ urlpatterns = [
     path('order-filter/', views.FilterOrderListAPIView.as_view()),
     path('client-profile/', views.ClientProfileAPIView.as_view()),
     path('client-profile-update/', views.ClientProfileUpdateView.as_view()),
+    path('driver-client-contract-list/', views.DriverClientContractAPIView.as_view()),
+    path('driver-client-contract-create/', views.DriverClientContractCreateAPIView.as_view()),
+    path('driver-client-contract-update/<int:pk>/', views.DriverClientContractUpdateAPIView.as_view())
 ]

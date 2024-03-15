@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from api.client.client_auth.models import ClientFullName, ClientDateBirth, ClientAvatar
-from api.client.client_main.models import Order, OrderFiles, ReplyDriver, ClientWishList
+from api.client.client_main.models import Order, OrderFiles, ReplyDriver, ClientWishList, DriverClientOrderContract
 from api.common.v1.serializers import CountrySerializer2
 from api.driver.driver_auth.serializers import DriverInformationSerializer, DriverInfoFullSerializer
 from api.common.accounts.models import Account
@@ -132,3 +132,15 @@ class ClientWishListCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClientWishList
         fields = ['driver']
+
+
+class DriverClientContractSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DriverClientOrderContract
+        fields = ['id', 'order_id', 'sender', 'default_price', 'receiver', 'updated_price', 'created_at', 'status']
+
+
+class DriverClientContractCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DriverClientOrderContract
+        fields = ['order_id', 'updated_price', 'receiver']
